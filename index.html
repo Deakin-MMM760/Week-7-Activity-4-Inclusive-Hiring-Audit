@@ -1,1 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MMM760 | Week 7 Activity 4 | Inclusive Hiring Audit</title>
+  <style>
+    :root {
+      --teal: #006f79; --teal-dark: #0b4f57; --teal-soft: #dff1f3;
+      --orange: #f08b2f; --orange-soft: #fff2e4;
+      --text: #22313a; --muted: #5f6f78; --line: #c9d7dc;
+      --panel: #ffffff; --page: #f5f7f8; --grey-box: #eef1f3;
+      --shadow: 0 8px 24px rgba(24,39,75,0.08); --radius: 18px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: var(--page); color: var(--text); line-height: 1.5; }
+    .page { max-width: 1440px; margin: 0 auto; padding: 24px; }
+    .top-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 20px; }
+    .action-btn { appearance: none; border: 1px solid var(--teal); background: #ffffff; color: var(--teal-dark); border-radius: 999px; padding: 12px 18px; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform 0.15s, background 0.15s, color 0.15s; }
+    .action-btn:hover, .action-btn:focus-visible { background: var(--teal); color: #ffffff; transform: translateY(-1px); outline: none; }
+    .layout { display: grid; grid-template-columns: minmax(0,1fr) 320px; gap: 24px; align-items: start; }
+    .main-card, .sidebar-card { background: var(--panel); border-radius: var(--radius); box-shadow: var(--shadow); }
+    .main-card { padding: 32px; }
+    .sidebar-wrap { position: sticky; top: 20px; display: grid; gap: 18px; }
+    .sidebar-card { padding: 22px; }
+    .eyebrow { font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--teal); margin: 0 0 10px; }
+    h1 { margin: 0; color: var(--teal-dark); font-size: 34px; line-height: 1.15; }
+    .intro { margin: 14px 0 0; max-width: 920px; color: var(--muted); font-size: 16px; }
+    .producing-box { margin-top: 24px; background: var(--grey-box); border-radius: 16px; padding: 20px 22px; border-left: 6px solid var(--teal); }
+    .producing-box h2 { margin: 0 0 10px; font-size: 22px; color: var(--teal-dark); }
+    .producing-box p { margin: 8px 0; }
+    .section { margin-top: 28px; border: 1px solid var(--line); border-radius: 18px; padding: 24px; background: #ffffff; }
+    .section h2 { margin: 0 0 8px; font-size: 25px; color: var(--teal-dark); }
+    .section .section-intro { margin: 0 0 14px; color: var(--muted); }
+    .prompt-box { background: #fafcfc; border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; margin-bottom: 16px; }
+    .prompt-label { display: block; margin-bottom: 6px; font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--teal); }
+    .prompt { margin: 0; font-family: "Times New Roman",Times,serif; font-style: italic; color: #5b6770; font-size: 17px; }
+    label.field-label { display: block; margin-bottom: 8px; font-size: 16px; font-weight: 700; color: var(--text); }
+    .field-note { margin: -4px 0 10px; color: var(--muted); font-size: 14px; }
+    input[type="text"], textarea, select { width: 100%; border: 1px solid #b5c7cd; border-radius: 12px; padding: 12px 14px; font-family: Arial,sans-serif; font-size: 15px; color: var(--text); background: #ffffff; transition: border-color 0.15s, box-shadow 0.15s; }
+    input:focus, textarea:focus, select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px rgba(0,111,121,0.12); outline: none; }
+    textarea { min-height: 130px; resize: vertical; }
+    .compact-area { min-height: 80px; }
+    .two-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; margin-top: 16px; }
+    .issue-card { border: 1px solid var(--line); border-radius: 14px; padding: 18px; background: #fafcfc; margin-bottom: 14px; }
+    .issue-card h3 { margin: 0 0 12px; font-size: 17px; color: var(--teal-dark); }
+    .desc-card { border-radius: 16px; padding: 22px; background: #fafcfc; border: 1px solid var(--line); }
+    .desc-step { border-left: 4px solid; padding: 16px 18px; margin-bottom: 14px; border-radius: 0 12px 12px 0; }
+    .desc-step--d { border-color: #0C8572; background: #f0fdf9; }
+    .desc-step--e { border-color: #F76919; background: #fff7f2; }
+    .desc-step--s { border-color: #0f4761; background: #f0f5fa; }
+    .desc-step--c { border-color: #6c757d; background: #f8f9fa; }
+    .desc-step h4 { margin: 0 0 4px; font-size: 16px; }
+    .desc-step--d h4 { color: #0C8572; }
+    .desc-step--e h4 { color: #c45610; }
+    .desc-step--s h4 { color: #0f4761; }
+    .desc-step--c h4 { color: #495057; }
+    .desc-step .step-def { margin: 0 0 10px; font-size: 13px; color: var(--muted); }
+    .subtle-box { margin-top: 16px; background: var(--orange-soft); border: 1px solid #f3cfac; border-radius: 14px; padding: 16px; }
+    .subtle-box h3 { margin: 0 0 8px; font-size: 18px; color: #7d4b12; }
+    .subtle-box p { margin: 6px 0; color: #6d4f27; }
+    .status-list { display: grid; gap: 12px; margin-top: 18px; }
+    .status-item { border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; background: #ffffff; }
+    .status-row { display: flex; justify-content: space-between; gap: 12px; align-items: center; }
+    .status-name { font-weight: 700; color: var(--text); }
+    .status-text { font-size: 13px; font-weight: 700; padding: 4px 8px; border-radius: 999px; white-space: nowrap; }
+    .status-text.complete { background: #e3f4e8; color: #1d6b38; }
+    .status-text.progress { background: #fff0e0; color: #8b5a20; }
+    .status-text.empty { background: #eef1f3; color: #5f6f78; }
+    .progress-bar { margin-top: 14px; height: 12px; background: #e8eef0; border-radius: 999px; overflow: hidden; }
+    .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg,var(--teal),#1794a0); transition: width 0.2s; }
+    .progress-copy { margin-top: 10px; font-size: 14px; color: var(--muted); }
+    .sidebar-card h2 { margin: 0 0 8px; font-size: 20px; color: var(--teal-dark); }
+    .sidebar-card p, .sidebar-card li { font-size: 13px; color: var(--muted); }
+    .sidebar-card ul { margin: 8px 0 0 16px; padding: 0; }
+    .helper-card { border-top: 6px solid var(--orange); }
+    .desc-ref-card { border-top: 6px solid var(--teal); }
+    .footer-space { height: 12px; }
+    @media (max-width: 1100px) { .layout { grid-template-columns: 1fr; } .sidebar-wrap { position: static; } }
+    @media (max-width: 860px) { .two-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 760px) { .page { padding: 16px; } .main-card, .sidebar-card { padding: 20px; } h1 { font-size: 28px; } }
+    @media print { body { background: #fff; } .top-actions, .sidebar-wrap { display: none !important; } .layout { grid-template-columns: 1fr; } .main-card, .section, .producing-box { box-shadow: none; border: 1px solid #c6d0d5; } .page { max-width: none; padding: 0; } .section { page-break-inside: avoid; } }
+  </style>
+</head>
+<body>
+<div class="page">
+  <div class="top-actions">
+    <button class="action-btn" type="button" id="resetBtn">Reset worksheet</button>
+    <button class="action-btn" type="button" id="exportBtn">Export to Word</button>
+    <button class="action-btn" type="button" id="printBtn">Print or save as PDF</button>
+  </div>
 
+  <div class="layout">
+    <main class="main-card">
+      <p class="eyebrow">MMM760 | Week 7</p>
+      <h1>Activity 4 | Inclusive Hiring Audit</h1>
+      <p class="intro">Find a real job advertisement and examine it critically. Identify what it excludes — intentionally or not — and rewrite the most problematic element to be more inclusive without changing the genuine requirements of the role. Then practise the DESC framework on a performance scenario.</p>
+
+      <section class="producing-box">
+        <h2>What you're producing</h2>
+        <p>A real job advertisement identified and its source noted.</p>
+        <p>Two or three features of the advertisement that narrow the candidate pool or signal a narrow cultural fit.</p>
+        <p>A rewrite of the most problematic element — more inclusive, same genuine requirements.</p>
+        <p>A brief explanation of what changed and why it matters.</p>
+        <p>A DESC script for a realistic small business performance conversation.</p>
+      </section>
+
+      <!-- Section 1: The advertisement -->
+      <section class="section" id="adSection">
+        <h2>1. The advertisement</h2>
+        <p class="section-intro">Find a real job advertisement on Seek, Indeed, LinkedIn Jobs, or another job board. Choose a role relevant to your practice business's industry. Paste the title and URL — you do not need to reproduce the full text.</p>
+
+        <div class="two-grid">
+          <div>
+            <label class="field-label" for="adTitle">Job advertisement title</label>
+            <input type="text" id="adTitle" placeholder="e.g. Client Services Coordinator — Fitzroy Physiotherapy">
+          </div>
+          <div>
+            <label class="field-label" for="adSource">Source and URL</label>
+            <input type="text" id="adSource" placeholder="e.g. Seek — seek.com.au/job/12345678">
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-label" for="adSummary">Brief summary of the role and its stated requirements</label>
+          <p class="field-note">Two to three sentences. What does the role do, and what does the advertisement say it requires?</p>
+          <textarea id="adSummary" class="compact-area" placeholder="e.g. A client-facing coordination role in a suburban physiotherapy clinic. The advertisement lists a bachelor's degree in a health-related field as essential, plus three to five years' experience in a clinical or allied health administration setting. It also asks for someone 'dynamic, bubbly, and passionate about health.'"></textarea>
+        </div>
+      </section>
+
+      <!-- Section 2: Audit -->
+      <section class="section" id="auditSection">
+        <h2>2. Audit — what does this advertisement exclude?</h2>
+        <p class="section-intro">Identify two or three features of the advertisement that might narrow the candidate pool or signal that certain kinds of people need not apply. Look at required qualifications, years of experience, language, culture-signalling adjectives, and implicit expectations.</p>
+
+        <div class="prompt-box">
+          <span class="prompt-label">Common exclusion patterns to look for</span>
+          <p class="prompt">Degree requirements that are not genuinely needed for the tasks described. Years of experience thresholds that screen out capable younger candidates. Adjectives like "rockstar," "ninja," "passionate," or "bubbly" that signal a narrow demographic. Physical requirements not relevant to the role. Salary withheld. Full-time only when the role could be performed part-time.</p>
+        </div>
+
+        <div class="prompt-box">
+          <span class="prompt-label">First Nations applicants — a specific lens (ULO4/GLO8)</span>
+          <p class="prompt">As you read the advertisement, consider whether any feature would specifically disadvantage a First Nations applicant. Does the advertisement require formal qualifications that screen out people who built skills through community and vocational pathways? Does it use language that assumes a particular cultural background or communication style? Does it require a continuous employment history that disadvantages people who have taken time away for family, community, or cultural obligations? These are documented barriers — not edge cases.</p>
+        </div>
+
+        <div class="issue-card">
+          <h3>Issue 1</h3>
+          <div class="two-grid" style="margin-top:0;">
+            <div>
+              <label class="field-label" for="issue1Feature">What feature of the advertisement is the problem?</label>
+              <textarea id="issue1Feature" class="compact-area" placeholder="e.g. The advertisement requires a bachelor's degree in a health-related field as an essential criterion."></textarea>
+            </div>
+            <div>
+              <label class="field-label" for="issue1Effect">Who does this exclude, and why does it matter?</label>
+              <textarea id="issue1Effect" class="compact-area" placeholder="e.g. This screens out candidates who have built their coordination skills through experience rather than formal study — including older workers, career changers, and people from lower-income backgrounds who did not access higher education. A coordination role does not require a clinical degree."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="issue-card">
+          <h3>Issue 2</h3>
+          <div class="two-grid" style="margin-top:0;">
+            <div>
+              <label class="field-label" for="issue2Feature">What feature of the advertisement is the problem?</label>
+              <textarea id="issue2Feature" class="compact-area" placeholder="e.g. The advertisement asks for someone 'bubbly' and 'passionate about health.'"></textarea>
+            </div>
+            <div>
+              <label class="field-label" for="issue2Effect">Who does this exclude, and why does it matter?</label>
+              <textarea id="issue2Effect" class="compact-area" placeholder="e.g. 'Bubbly' is a gendered, personality-based descriptor that signals a narrow social type and may deter candidates who are highly effective but quietly professional rather than overtly enthusiastic. It is not a performance criterion."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div class="issue-card">
+          <h3>Issue 3 <span style="font-weight:400;color:var(--muted);font-size:14px;">(optional)</span></h3>
+          <div class="two-grid" style="margin-top:0;">
+            <div>
+              <label class="field-label" for="issue3Feature">What feature of the advertisement is the problem?</label>
+              <textarea id="issue3Feature" class="compact-area" placeholder="Optional third issue."></textarea>
+            </div>
+            <div>
+              <label class="field-label" for="issue3Effect">Who does this exclude, and why does it matter?</label>
+              <textarea id="issue3Effect" class="compact-area" placeholder="Optional."></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Section 3: Rewrite -->
+      <section class="section" id="rewriteSection">
+        <h2>3. Rewrite</h2>
+        <p class="section-intro">Rewrite the most significant problematic element of the advertisement to make it more inclusive. Keep the genuine requirements of the role. Remove or replace only what is unnecessarily exclusive.</p>
+
+        <div class="two-grid">
+          <div>
+            <label class="field-label" for="originalText">Original text (the element you are rewriting)</label>
+            <textarea id="originalText" placeholder="e.g. Essential: Bachelor's degree in a health-related field. 3–5 years' experience in a clinical or allied health administration setting. Must be bubbly and passionate about health."></textarea>
+          </div>
+          <div>
+            <label class="field-label" for="rewrittenText">Your rewrite</label>
+            <textarea id="rewrittenText" placeholder="e.g. Essential: Demonstrated experience in a client-facing administration or coordination role — formal qualifications are not required if you can show you have done this work effectively. A professional, warm manner with clients is important; you do not need to describe yourself as 'bubbly' to be the right person for this role."></textarea>
+          </div>
+        </div>
+        <div style="margin-top:16px;">
+          <label class="field-label" for="rewriteExplanation">Explain what you changed and why it makes the advertisement more inclusive</label>
+          <p class="field-note">Two to three sentences. What does the rewrite preserve, and what does it remove — and who does it now reach that the original excluded?</p>
+          <textarea id="rewriteExplanation" class="compact-area" placeholder="e.g. The rewrite removes the degree requirement and replaces it with a demonstrated competence criterion — preserving the standard of work required without the educational gatekeeping. It also removes 'bubbly' and replaces it with a behavioural description of what the client-facing requirement actually means. The rewrite now reaches capable candidates who built their skills through experience, which is a significantly larger and more diverse group."></textarea>
+        </div>
+      </section>
+
+      <!-- Section 4: DESC -->
+      <section class="section" id="descSection">
+        <h2>4. DESC framework practice</h2>
+        <p class="section-intro">Write a DESC script for the following scenario: a team member has been arriving 10–15 minutes late on three occasions in the past fortnight. Their work quality is good and they have been with the business for eight months. You need to address the lateness without damaging the relationship.</p>
+
+        <div class="desc-card">
+
+          <div class="desc-step desc-step--d">
+            <h4>D — Describe</h4>
+            <p class="step-def">State the specific behaviour or situation objectively. No character judgements, no assumptions about motivation. What happened, specifically?</p>
+            <label class="field-label" for="descD">Your Describe statement</label>
+            <textarea id="descD" class="compact-area" placeholder="e.g. Over the past fortnight — on Tuesday the 15th, Thursday the 17th, and Monday the 21st — you arrived between 10 and 15 minutes after your scheduled start time."></textarea>
+          </div>
+
+          <div class="desc-step desc-step--e">
+            <h4>E — Express</h4>
+            <p class="step-def">State the impact — on the business, the team, or clients — and, where appropriate, your own response. Stick to impact and observable facts.</p>
+            <label class="field-label" for="descE">Your Express statement</label>
+            <textarea id="descE" class="compact-area" placeholder="e.g. When the start time is not met, the morning client gets a delayed start and I have had to cover the first 10–15 minutes of the service myself. It also sets a standard for the broader team that I am not comfortable with."></textarea>
+          </div>
+
+          <div class="desc-step desc-step--s">
+            <h4>S — Specify</h4>
+            <p class="step-def">State clearly and concretely what you need to change going forward. Be specific about the standard, the timeline, and what you will do to support it.</p>
+            <label class="field-label" for="descS">Your Specify statement</label>
+            <textarea id="descS" class="compact-area" placeholder="e.g. Going forward, I need you to arrive at your scheduled start time — or to contact me by 8am if something has come up that will affect your arrival. If there is something making the current hours difficult, I am open to discussing whether a different arrangement could work."></textarea>
+          </div>
+
+          <div class="desc-step desc-step--c">
+            <h4>C — Consequences</h4>
+            <p class="step-def">State what will happen if the behaviour changes — and, only if it is genuine and warranted, what the consequence will be if it does not. Do not threaten. Be clear.</p>
+            <label class="field-label" for="descC">Your Consequences statement</label>
+            <textarea id="descC" class="compact-area" placeholder="e.g. If this changes, we are back on track and I do not need to raise it again. If the pattern continues, I will need to treat it as a performance issue and we will need to have a more formal conversation about what is going on."></textarea>
+          </div>
+        </div>
+
+        <div class="subtle-box">
+          <h3>Quality check</h3>
+          <p>Does the Describe step name specific dates or instances — not a vague pattern?</p>
+          <p>Does the Express step focus on impact — not character, motivation, or assumptions?</p>
+          <p>Does the Specify step give the person a clear, actionable standard — not just "do better"?</p>
+          <p>Does the Consequences step close with clarity — not ambiguity or an empty threat?</p>
+        </div>
+      </section>
+
+      <!-- Section 5: Reflection -->
+      <section class="section" id="reflectionSection">
+        <h2>5. Reflection</h2>
+        <label class="field-label" for="reflection">What does this audit reveal about how hiring practices in your industry shape the people who enter it — and who is kept out?</label>
+        <p class="field-note">Two to three sentences. Think beyond the individual advertisement to the broader pattern it represents — including what it means for First Nations employment in this industry. The Deakin Indigenous Knowledges resource guide provides further context if needed: <a href="https://deakin.libguides.com/IndigenousKnowledges/resources" target="_blank" rel="noopener">deakin.libguides.com/IndigenousKnowledges/resources</a></p>
+        <textarea id="reflection" placeholder="e.g. The audit revealed that even well-intentioned advertisements in this industry routinely require credentials that are not operationally necessary — not because the employers are discriminatory, but because they are copying convention without examining it. The cumulative effect is an industry pipeline that skews toward people who accessed higher education, which correlates strongly with socioeconomic background. The fix is not difficult — it is just uncommonly done."></textarea>
+      </section>
+
+      <div class="footer-space"></div>
+    </main>
+
+    <aside class="sidebar-wrap">
+      <section class="sidebar-card">
+        <h2>Your progress</h2>
+        <div class="progress-bar" aria-hidden="true"><div class="progress-fill" id="progressFill"></div></div>
+        <p class="progress-copy" id="progressCopy">0 of 5 sections complete</p>
+        <div class="status-list">
+          <div class="status-item"><div class="status-row"><span class="status-name">The advertisement</span><span class="status-text empty" id="statusAd">0 of 3</span></div></div>
+          <div class="status-item"><div class="status-row"><span class="status-name">Audit — issues</span><span class="status-text empty" id="statusAudit">0 of 4 min</span></div></div>
+          <div class="status-item"><div class="status-row"><span class="status-name">Rewrite</span><span class="status-text empty" id="statusRewrite">0 of 3</span></div></div>
+          <div class="status-item"><div class="status-row"><span class="status-name">DESC script</span><span class="status-text empty" id="statusDesc">0 of 4</span></div></div>
+          <div class="status-item"><div class="status-row"><span class="status-name">Reflection</span><span class="status-text empty" id="statusRefl">0 of 1</span></div></div>
+        </div>
+      </section>
+
+      <section class="sidebar-card desc-ref-card">
+        <h2>DESC at a glance</h2>
+        <p><strong style="color:#0C8572;">D — Describe</strong><br>The specific behaviour. Objective. No judgement.</p>
+        <p><strong style="color:#c45610;">E — Express</strong><br>The impact on the business, team, or clients.</p>
+        <p><strong style="color:#0f4761;">S — Specify</strong><br>Exactly what you need to change. Concrete standard.</p>
+        <p><strong style="color:#495057;">C — Consequences</strong><br>What happens if it changes — and if it does not.</p>
+      </section>
+
+      <section class="sidebar-card helper-card">
+        <h2>Before you export</h2>
+        <ul>
+          <li>Advertisement source and title recorded.</li>
+          <li>At least two issues identified with a specific effect explained for each.</li>
+          <li>Rewrite preserves genuine requirements, removes unnecessary exclusions.</li>
+          <li>Each DESC step focuses on its specific function — no blending steps.</li>
+          <li>Reflection addresses the broader industry pattern, not just this one ad.</li>
+        </ul>
+      </section>
+    </aside>
+  </div>
+</div>
+
+<script>
+  const STORAGE_KEY = 'mmm760_week7_activity4_inclusive_hiring';
+
+  function getText(id) { const el = document.getElementById(id); return el ? String(el.value).trim() : ''; }
+  function setStatus(id, t, cls) { const el = document.getElementById(id); if (el) { el.textContent = t; el.className = 'status-text ' + cls; } }
+  function countFilled(ids) { return ids.filter(id => getText(id) !== '').length; }
+
+  function updateProgress() {
+    const cAd = countFilled(['adTitle','adSource','adSummary']);
+    const cAudit = countFilled(['issue1Feature','issue1Effect','issue2Feature','issue2Effect']);
+    const cRewrite = countFilled(['originalText','rewrittenText','rewriteExplanation']);
+    const cDesc = countFilled(['descD','descE','descS','descC']);
+    const cRefl = countFilled(['reflection']);
+
+    const sections = [cAd >= 3, cAudit >= 4, cRewrite >= 3, cDesc >= 4, cRefl >= 1];
+    const done = sections.filter(Boolean).length;
+    document.getElementById('progressFill').style.width = (done / 5 * 100) + '%';
+    document.getElementById('progressCopy').textContent = done + ' of 5 sections complete';
+
+    setStatus('statusAd', cAd + ' of 3', cAd >= 3 ? 'complete' : cAd > 0 ? 'progress' : 'empty');
+    setStatus('statusAudit', cAudit + ' of 4 min', cAudit >= 4 ? 'complete' : cAudit > 0 ? 'progress' : 'empty');
+    setStatus('statusRewrite', cRewrite + ' of 3', cRewrite >= 3 ? 'complete' : cRewrite > 0 ? 'progress' : 'empty');
+    setStatus('statusDesc', cDesc + ' of 4', cDesc >= 4 ? 'complete' : cDesc > 0 ? 'progress' : 'empty');
+    setStatus('statusRefl', cRefl + ' of 1', cRefl >= 1 ? 'complete' : 'empty');
+  }
+
+  const ALL_IDS = ['adTitle','adSource','adSummary',
+    'issue1Feature','issue1Effect','issue2Feature','issue2Effect','issue3Feature','issue3Effect',
+    'originalText','rewrittenText','rewriteExplanation',
+    'descD','descE','descS','descC','reflection'];
+
+  function saveState() {
+    const state = {};
+    ALL_IDS.forEach(id => { const el = document.getElementById(id); if (el) state[id] = el.value; });
+    try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+    updateProgress();
+  }
+
+  function loadState() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) { const s = JSON.parse(raw); Object.keys(s).forEach(k => { const el = document.getElementById(k); if (el) el.value = s[k]; }); }
+    } catch(e) {}
+    updateProgress();
+  }
+
+  function escapeHtml(v) { return (v||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+  function issueRow(n, feature, effect) {
+    if (!feature && !effect) return '';
+    return `<tr><td style="background:#f5f7f8;padding:8px;border:1px solid #b7c7cc;font-weight:700;white-space:nowrap;">Issue ${n}</td><td style="padding:8px;border:1px solid #b7c7cc;">${escapeHtml(feature)||'&nbsp;'}</td><td style="padding:8px;border:1px solid #b7c7cc;">${escapeHtml(effect)||'&nbsp;'}</td></tr>`;
+  }
+
+  function exportToWord() {
+    saveState();
+    const docTitle = (getText('adTitle')||'Week-7-Activity-4-Inclusive-Hiring').replace(/[^a-z0-9\-\s]/gi,'').trim().replace(/\s+/g,'-');
+    const content = `<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40"><head><meta charset="utf-8"></head>
+    <body style="font-family:Arial,sans-serif;color:#22313a;line-height:1.45;">
+    <h1 style="color:#0b4f57;">MMM760 | Week 7 Activity 4 | Inclusive Hiring Audit</h1>
+    <h2 style="color:#0b4f57;margin-top:20px;">1. The Advertisement</h2>
+    <p><strong>Title:</strong> ${escapeHtml(getText('adTitle'))}</p>
+    <p><strong>Source:</strong> ${escapeHtml(getText('adSource'))}</p>
+    <p><strong>Summary:</strong><br>${escapeHtml(getText('adSummary'))}</p>
+    <h2 style="color:#0b4f57;margin-top:20px;">2. Audit — Exclusion Issues</h2>
+    <table style="width:100%;border-collapse:collapse;">
+    <thead><tr>
+    <th style="background:#0b4f57;color:#fff;padding:8px;border:1px solid #b7c7cc;width:10%;"></th>
+    <th style="background:#0b4f57;color:#fff;padding:8px;border:1px solid #b7c7cc;width:45%;">Feature of the advertisement</th>
+    <th style="background:#0b4f57;color:#fff;padding:8px;border:1px solid #b7c7cc;width:45%;">Who it excludes and why it matters</th>
+    </tr></thead><tbody>
+    ${issueRow(1,getText('issue1Feature'),getText('issue1Effect'))}
+    ${issueRow(2,getText('issue2Feature'),getText('issue2Effect'))}
+    ${issueRow(3,getText('issue3Feature'),getText('issue3Effect'))}
+    </tbody></table>
+    <h2 style="color:#0b4f57;margin-top:20px;">3. Rewrite</h2>
+    <p><strong>Original text:</strong><br>${escapeHtml(getText('originalText'))}</p>
+    <p><strong>Rewrite:</strong><br>${escapeHtml(getText('rewrittenText'))}</p>
+    <p><strong>Explanation:</strong><br>${escapeHtml(getText('rewriteExplanation'))}</p>
+    <h2 style="color:#0b4f57;margin-top:20px;">4. DESC Script</h2>
+    <p><strong style="color:#0C8572;">D — Describe:</strong><br>${escapeHtml(getText('descD'))}</p>
+    <p><strong style="color:#c45610;">E — Express:</strong><br>${escapeHtml(getText('descE'))}</p>
+    <p><strong style="color:#0f4761;">S — Specify:</strong><br>${escapeHtml(getText('descS'))}</p>
+    <p><strong style="color:#495057;">C — Consequences:</strong><br>${escapeHtml(getText('descC'))}</p>
+    <h2 style="color:#0b4f57;margin-top:20px;">5. Reflection</h2>
+    <p>${escapeHtml(getText('reflection'))}</p>
+    </body></html>`;
+    const blob = new Blob(['\ufeff', content], { type: 'application/msword' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob); link.download = docTitle + '.doc';
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+  }
+
+  function resetWorksheet() {
+    if (!window.confirm('Reset this worksheet and clear all saved entries?')) return;
+    document.querySelectorAll('input,textarea,select').forEach(f => { f.value = ''; });
+    try { localStorage.removeItem(STORAGE_KEY); } catch(e) {}
+    updateProgress();
+  }
+
+  document.querySelectorAll('input,textarea,select').forEach(f => { f.addEventListener('input', saveState); f.addEventListener('change', saveState); });
+  document.getElementById('resetBtn').addEventListener('click', resetWorksheet);
+  document.getElementById('exportBtn').addEventListener('click', exportToWord);
+  document.getElementById('printBtn').addEventListener('click', () => window.print());
+  loadState();
+</script>
+</body>
+</html>
